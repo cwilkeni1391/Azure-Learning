@@ -1,0 +1,51 @@
+Core Storage services
+
+Bennefits - Built to offer durable, highly available, encryption, security, scalable, accessibility
+
+Blob Storage - Provides object storage for the cloud
+- Optimized to support massive amounts of unstructured data
+- unstructured data is data that does not fit a specific data model
+- Text and Binary are examples of this type of data
+
+Azure Files- Fully managed file share system available in the cloud
+- access through typical SMB protocol
+- Mount file shares from Windows, LLinux, and MACOS machines that reside both on prem and in the cloud
+- Cache file shares on Windows Server, using Azure file sync service
+
+Queue Storage- Designed for storing messages, usually in large numbers, for use in communications between a distributed application
+- messages can be accessed through http or https 
+
+Azure Table storage - Intended for the storage of structured NoSQL data
+- Offers a key /attribute store and a schema-less design
+- Schema-less design allows you to more easily adapt data to the needs of your business or application
+
+Disk storage - block level storage volumes
+- used to provied storage cpabilities for virtual machines
+- much like a physical disk that you would see in an on prem-server, but virtualized
+- Available disk types include ultra diskes, premium SSD disks, standard SSD disks and standard HDD disks
+
+-----------------------------------------------------------------------------------------------------
+
+Storage Account Types
+
+Storage accounts are like containers for the storage types 
+Storage Account name must be unique accross the entire Azure landscape
+
+General-purpose V2
+- Basic storage account that can be used to host blobs,files, queues, and tables
+- Recommended for most scenarios that require Azure storage
+
+Block Blob storage accounts
+- Premium performance for block blobs and append blobs
+- Used for situations where high transaction rates are in play
+- for scenarios that requre low storage latency
+
+File storage account
+- files only storage accounts
+- feature high performance characteristics
+- recommended for enterprise applications or high-performing applications
+
+Blob Storage
+- a legacy account used for blob only storage
+- recommended to use General purpose V2
+
