@@ -1,0 +1,39 @@
+#set default location for where you are
+
+az configure --defaults location=westus2
+az network vnet list --output table
+
+resource_group=$(az group list --query [].name --output tsv)
+az network vnet subnet list --resource-group $resource_group --vnet-name app --output table
+
+az network vnet subnet list --resource-group $resource_group --vnet-name app --query [].networkSecurityGroup.id --output tsv
+
+az network nsg rule list --resource-group $resource_group --nsg-name website-vmssnsg --output jsonc
+az vmss list --output jsonc | more
+
+
+
+az network vnet subnet create --resource-group $resource_group --vnet-name app \
+                              --name app-gw --address-prefix 10.0.100.0/24
+
+
+                              az network application-gateway create --resource-group $resource_group --vnet-name app --subnet app-gw \
+                                      --name app-gw --capacity 1 --frontend-port 80 \
+                                      --http-settings-cookie-based-affinity Disabled \
+                                      --http-settings-port 80 --http-settings-protocol Http \
+                                      --public-ip-address app-gw-ip --sku Standard_Small
+
+
+az vmss extension set --vmss-name website-vmss --name customScript --resource-group $resource_group --version 2.0 --publisher Microsoft.azure.extensions --settings '{"fileUris": ["https://raw.githubusercontent.com/cloudacademy/azure-lab-provisioners/master/app-gw/deploy.sh"], "commandToExecute": "./deploy.sh"}'
+
+
+az configure --defaults location=westus2
+resource_group=$(az group list --query [].name --output tsv)
+az vmss show --resource-group $resource_group --name website-vmss \
+             --query virtualMachineProfile.networkProfile.networkInterfaceConfigurations
+
+
+backend_pool_id=$(az network application-gateway show --resource-group $resource_group --name app-gw --query backendAddressPools[0].id)
+
+az vmss update --resource-group $resource_group --name website-vmss \
+  --add virtualMachineProfile.networkProfile.networkInterfaceConfigurations[0].ipConfigurations[0].applicationGatewayBackendAddressPools "{'id':$backend_pool_id}"
